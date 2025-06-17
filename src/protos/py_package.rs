@@ -28,8 +28,8 @@ const _PROTOBUF_VERSION_CHECK: () = ::protobuf::VERSION_3_7_2;
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct PyPackageOptions {
     // message fields
-    // @@protoc_insertion_point(field:py_package.PyPackageOptions.name)
-    pub name: ::std::string::String,
+    // @@protoc_insertion_point(field:py_package.PyPackageOptions.enable)
+    pub enable: bool,
     // @@protoc_insertion_point(field:py_package.PyPackageOptions.enable_top_level_imports)
     pub enable_top_level_imports: bool,
     // special fields
@@ -52,9 +52,9 @@ impl PyPackageOptions {
         let mut fields = ::std::vec::Vec::with_capacity(2);
         let mut oneofs = ::std::vec::Vec::with_capacity(0);
         fields.push(::protobuf::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-            "name",
-            |m: &PyPackageOptions| { &m.name },
-            |m: &mut PyPackageOptions| { &mut m.name },
+            "enable",
+            |m: &PyPackageOptions| { &m.enable },
+            |m: &mut PyPackageOptions| { &mut m.enable },
         ));
         fields.push(::protobuf::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
             "enable_top_level_imports",
@@ -79,8 +79,8 @@ impl ::protobuf::Message for PyPackageOptions {
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::Result<()> {
         while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
-                10 => {
-                    self.name = is.read_string()?;
+                8 => {
+                    self.enable = is.read_bool()?;
                 },
                 16 => {
                     self.enable_top_level_imports = is.read_bool()?;
@@ -97,8 +97,8 @@ impl ::protobuf::Message for PyPackageOptions {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
-        if !self.name.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.name);
+        if self.enable != false {
+            my_size += 1 + 1;
         }
         if self.enable_top_level_imports != false {
             my_size += 1 + 1;
@@ -109,8 +109,8 @@ impl ::protobuf::Message for PyPackageOptions {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::Result<()> {
-        if !self.name.is_empty() {
-            os.write_string(1, &self.name)?;
+        if self.enable != false {
+            os.write_bool(1, self.enable)?;
         }
         if self.enable_top_level_imports != false {
             os.write_bool(2, self.enable_top_level_imports)?;
@@ -132,14 +132,14 @@ impl ::protobuf::Message for PyPackageOptions {
     }
 
     fn clear(&mut self) {
-        self.name.clear();
+        self.enable = false;
         self.enable_top_level_imports = false;
         self.special_fields.clear();
     }
 
     fn default_instance() -> &'static PyPackageOptions {
         static instance: PyPackageOptions = PyPackageOptions {
-            name: ::std::string::String::new(),
+            enable: false,
             enable_top_level_imports: false,
             special_fields: ::protobuf::SpecialFields::new(),
         };
@@ -172,11 +172,11 @@ pub mod exts {
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x10py_package.proto\x12\npy_package\x1a\x20google/protobuf/descriptor\
-    .proto\"_\n\x10PyPackageOptions\x12\x12\n\x04name\x18\x01\x20\x01(\tR\
-    \x04name\x127\n\x18enable_top_level_imports\x18\x02\x20\x01(\x08R\x15ena\
-    bleTopLevelImports:c\n\x0fpy_package_opts\x18\x94\n\x20\x01(\x0b2\x1c.py\
-    _package.PyPackageOptions\x12\x1c.google.protobuf.FileOptionsR\rpyPackag\
-    eOptsb\x06proto3\
+    .proto\"c\n\x10PyPackageOptions\x12\x16\n\x06enable\x18\x01\x20\x01(\x08\
+    R\x06enable\x127\n\x18enable_top_level_imports\x18\x02\x20\x01(\x08R\x15\
+    enableTopLevelImports:c\n\x0fpy_package_opts\x18\x94\n\x20\x01(\x0b2\x1c\
+    .py_package.PyPackageOptions\x12\x1c.google.protobuf.FileOptionsR\rpyPac\
+    kageOptsb\x06proto3\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file

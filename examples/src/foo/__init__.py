@@ -1,4 +1,4 @@
-import foo.examples.proto.v1.foo_pb2 as foo_pb2
+from  foo.examples.proto.v1.foo_pb2 import Foo
 
-f = foo_pb2.Foo()
+f = Foo()
 f.name = "example"

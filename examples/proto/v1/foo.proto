@@ -2,7 +2,8 @@ syntax = "proto3";
 import "google/protobuf/descriptor.proto";
 import "py_package.proto";
 
-option (py_package.py_package_opts).name = "proto.v1";
+option (py_package.py_package_opts).enable = true;
+option (py_package.py_package_opts).enable_top_level_imports = true;
 
 message Foo {
   string name = 1;
