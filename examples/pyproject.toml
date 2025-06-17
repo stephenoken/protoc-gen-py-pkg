@@ -1,0 +1,19 @@
+[project]
+name = "foo"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "N/A", email = "no-name@test1234.com"},
+]
+dependencies = ["protobuf>=6.31.1"]
+requires-python = ">=3.13"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.pdm]
+distribution = true

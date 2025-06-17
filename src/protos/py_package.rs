@@ -30,6 +30,8 @@ pub struct PyPackageOptions {
     // message fields
     // @@protoc_insertion_point(field:py_package.PyPackageOptions.name)
     pub name: ::std::string::String,
+    // @@protoc_insertion_point(field:py_package.PyPackageOptions.enable_top_level_imports)
+    pub enable_top_level_imports: bool,
     // special fields
     // @@protoc_insertion_point(special_field:py_package.PyPackageOptions.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
@@ -47,12 +49,17 @@ impl PyPackageOptions {
     }
 
     fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
-        let mut fields = ::std::vec::Vec::with_capacity(1);
+        let mut fields = ::std::vec::Vec::with_capacity(2);
         let mut oneofs = ::std::vec::Vec::with_capacity(0);
         fields.push(::protobuf::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
             "name",
             |m: &PyPackageOptions| { &m.name },
             |m: &mut PyPackageOptions| { &mut m.name },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "enable_top_level_imports",
+            |m: &PyPackageOptions| { &m.enable_top_level_imports },
+            |m: &mut PyPackageOptions| { &mut m.enable_top_level_imports },
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PyPackageOptions>(
             "PyPackageOptions",
@@ -75,6 +82,9 @@ impl ::protobuf::Message for PyPackageOptions {
                 10 => {
                     self.name = is.read_string()?;
                 },
+                16 => {
+                    self.enable_top_level_imports = is.read_bool()?;
+                },
                 tag => {
                     ::protobuf::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
@@ -90,6 +100,9 @@ impl ::protobuf::Message for PyPackageOptions {
         if !self.name.is_empty() {
             my_size += ::protobuf::rt::string_size(1, &self.name);
         }
+        if self.enable_top_level_imports != false {
+            my_size += 1 + 1;
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
@@ -98,6 +111,9 @@ impl ::protobuf::Message for PyPackageOptions {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::Result<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
+        }
+        if self.enable_top_level_imports != false {
+            os.write_bool(2, self.enable_top_level_imports)?;
         }
         os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -117,12 +133,14 @@ impl ::protobuf::Message for PyPackageOptions {
 
     fn clear(&mut self) {
         self.name.clear();
+        self.enable_top_level_imports = false;
         self.special_fields.clear();
     }
 
     fn default_instance() -> &'static PyPackageOptions {
         static instance: PyPackageOptions = PyPackageOptions {
             name: ::std::string::String::new(),
+            enable_top_level_imports: false,
             special_fields: ::protobuf::SpecialFields::new(),
         };
         &instance
@@ -154,10 +172,11 @@ pub mod exts {
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x10py_package.proto\x12\npy_package\x1a\x20google/protobuf/descriptor\
-    .proto\"&\n\x10PyPackageOptions\x12\x12\n\x04name\x18\x01\x20\x01(\tR\
-    \x04name:c\n\x0fpy_package_opts\x18\x94\n\x20\x01(\x0b2\x1c.py_package.P\
-    yPackageOptions\x12\x1c.google.protobuf.FileOptionsR\rpyPackageOptsb\x06\
-    proto3\
+    .proto\"_\n\x10PyPackageOptions\x12\x12\n\x04name\x18\x01\x20\x01(\tR\
+    \x04name\x127\n\x18enable_top_level_imports\x18\x02\x20\x01(\x08R\x15ena\
+    bleTopLevelImports:c\n\x0fpy_package_opts\x18\x94\n\x20\x01(\x0b2\x1c.py\
+    _package.PyPackageOptions\x12\x1c.google.protobuf.FileOptionsR\rpyPackag\
+    eOptsb\x06proto3\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file

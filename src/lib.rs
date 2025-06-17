@@ -19,14 +19,14 @@ pub fn generate_py_init_files(opts: &Option<py_package::PyPackageOptions>) -> im
         (0..components.len()).scan(String::new(), move |path_so_far, index | {
             let current_component = components[index];
             let path_dir = if path_so_far.is_empty() {
-                current_component.to_string()
+                Path::new(&current_component).to_path_buf()
             } else {
-                format!("{}/{}", path_so_far, current_component)
+                Path::new(&path_so_far).join(current_component)
             };
 
             // Update the path_so_far with the current component
-            *path_so_far = path_dir.clone();
-            let file_name = format!("{}/__init__.py", path_dir);
+            *path_so_far = path_dir.to_string_lossy().to_string();
+            let file_name = path_dir.join("__init__.py").to_string_lossy().to_string();
             let mut file = File::new();
             file.set_name(file_name);
             file.set_content(String::from("# Generated Python package init file"));
