@@ -3,11 +3,7 @@ use protobuf::{
     descriptor::FileDescriptorProto,
     plugin::{CodeGeneratorRequest, CodeGeneratorResponse},
 };
-use std::{
-    io::{BufReader, Read, Write},
-    iter,
-    path::Iter,
-};
+use std::io::{BufReader, Read, Write};
 // pub mod protos;
 use protoc_gen_py_pkg::protos::py_package;
 
@@ -44,25 +40,15 @@ fn main() {
         })
         .collect();
 
-        /* 
-        We won't use protoc to generate the files 
-        instead we will return a dictionary of the init files 
-        along with the top level message object that's going to be inserted.
-        We will then check if the init file exists at the top level.
-        If it doesn't exist we will create it and write out the top level 
-        imports. However, if the file does exist we will read the contents 
-        of the file line by line and then create a a set and then output the contents 
-        to the new file.
-         */
-    let file = opts.iter()
+    opts.iter()
         .flat_map(|(file_descriptor, opts)| {
-            protoc_gen_py_pkg::generate_py_init_files(file_descriptor, opts)
+            // protoc_gen_py_pkg::generate_py_init_files(file_descriptor, opts)
+            let configs = protoc_gen_py_pkg::generate_py_init_configs(file_descriptor, opts);
+            protoc_gen_py_pkg::generate_py_init_files(configs)
         })
-        .map(|file| {
+        .for_each(|file| {
             log::info!("Generated file: {}", file.name());
-            let file_name = String::from(file.name());
             response.file.push(file);
-            file_name
         });
 
     let output = response.write_to_bytes().unwrap();
