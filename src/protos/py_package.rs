@@ -195,7 +195,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x08R\x15enableTopLevelImports\x12%\n\x0eparent_package\x18\x03\x20\x01(\
     \tR\rparentPackage:c\n\x0fpy_package_opts\x18\x94\n\x20\x01(\x0b2\x1c.py\
     _package.PyPackageOptions\x12\x1c.google.protobuf.FileOptionsR\rpyPackag\
-    eOptsb\x06proto3\
+    eOptsB0Z.github.com/stephenoken/protoc-gen-py-pkg/protob\x06proto3\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file

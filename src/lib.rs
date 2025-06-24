@@ -3,24 +3,19 @@ use std::{collections::HashMap, iter::Scan, ops::Range, path::Path};
 
 use protobuf::{descriptor::FileDescriptorProto, plugin::code_generator_response::File};
 use protos::py_package;
-use std::path::PathBuf;
 
 pub struct InitPyConfig {
     py_imports: Vec<String>,
 }
 
-pub fn load_python_import_file(file_path: &PathBuf) -> Vec<String> {
-    if !file_path.exists() {
-        log::warn!("File not found: {}", file_path.display());
-        return vec![];
-    }
-    match std::fs::read_to_string(file_path) {
-        Ok(content) => content.lines().map(String::from).collect(),
-        Err(e) => {
-            log::error!("Failed to read file {}: {}", file_path.display(), e);
-            vec![]
-        }
-    }
+pub fn load_python_import_file() -> Vec<String> {
+    // This function will load the pu_package_imports.txt file and
+    // bundle it's contents as part of the binary.
+    let content = include_str!("py_package_imports.txt");
+    content
+        .lines()
+        .map(String::from)
+        .collect::<Vec<String>>()
 }
 
 pub fn generate_py_init_configs(
