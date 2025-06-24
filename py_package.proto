@@ -8,6 +8,10 @@ extend google.protobuf.FileOptions {
 }
 
 message PyPackageOptions {
-    bool enable = 1; // Enable Python package generation.
+    // Enable Python package generation.
+    bool enable = 1; 
+    // If true, imports will be generated at the top level of the package.
     bool enable_top_level_imports = 2;
+    // Package name for the generated Python package.
+    string parent_package = 3;
 }

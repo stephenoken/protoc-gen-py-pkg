@@ -24,7 +24,6 @@ fn main() {
                 .as_slice(),
         )
         .unwrap();
-
     let mut response = CodeGeneratorResponse::new();
     response.set_supported_features(CODE_GENERATOR_RESPONSE_FEATURE_PROTO3_OPTIONAL);
     let opts: Vec<(&FileDescriptorProto, Option<py_package::PyPackageOptions>)> = request
@@ -47,6 +46,7 @@ fn main() {
             protoc_gen_py_pkg::generate_py_init_files(configs)
         })
         .for_each(|file| {
+            log::info!("Adding file to response: {}", file.name());
             log::info!("Generated file: {}", file.name());
             response.file.push(file);
         });
