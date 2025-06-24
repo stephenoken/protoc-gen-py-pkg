@@ -3,11 +3,11 @@ use protobuf::{
     descriptor::FileDescriptorProto,
     plugin::{CodeGeneratorRequest, CodeGeneratorResponse},
 };
-use std::{io::{BufReader, Read, Write}, path::{self, Path}};
-// pub mod protos;
 use protoc_gen_py_pkg::protos::py_package;
-
-// use protoc_gen_py_pkg::protos::py_package::exts::py_package_opts;
+use std::{
+    io::{BufReader, Read, Write},
+    path::Path,
+};
 
 const CODE_GENERATOR_RESPONSE_FEATURE_PROTO3_OPTIONAL: u64 = 1;
 
@@ -39,18 +39,18 @@ fn main() {
         })
         .collect();
 
-    let init_file_path = Path::new(".")
-        .join("src")
-        .join("py_package_imports.txt");
+    let init_file_path = Path::new(".").join("src").join("py_package_imports.txt");
     opts.iter()
         .flat_map(|(file_descriptor, opts)| {
             // protoc_gen_py_pkg::generate_py_init_files(file_descriptor, opts)
-            let configs = protoc_gen_py_pkg::generate_py_init_configs(file_descriptor, opts, protoc_gen_py_pkg::load_python_import_file(&init_file_path));
+            let configs = protoc_gen_py_pkg::generate_py_init_configs(
+                file_descriptor,
+                opts,
+                protoc_gen_py_pkg::load_python_import_file(&init_file_path),
+            );
             protoc_gen_py_pkg::generate_py_init_files(configs)
         })
         .for_each(|file| {
-            log::info!("Adding file to response: {}", file.name());
-            log::info!("Generated file: {}", file.name());
             response.file.push(file);
         });
 
