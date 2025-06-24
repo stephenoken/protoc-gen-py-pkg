@@ -9,13 +9,9 @@ from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import runtime_version as _runtime_version
 from google.protobuf import symbol_database as _symbol_database
 from google.protobuf.internal import builder as _builder
+
 _runtime_version.ValidateProtobufRuntimeVersion(
-    _runtime_version.Domain.PUBLIC,
-    5,
-    29,
-    3,
-    '',
-    'examples/proto/v1/foo.proto'
+    _runtime_version.Domain.PUBLIC, 5, 29, 3, "", "examples/proto/v1/foo.proto"
 )
 # @@protoc_insertion_point(imports)
 
@@ -26,18 +22,22 @@ from google.protobuf import descriptor_pb2 as google_dot_protobuf_dot_descriptor
 import py_package_pb2 as py__package__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1b\x65xamples/proto/v1/foo.proto\x1a google/protobuf/descriptor.proto\x1a\x10py_package.proto\"?\n\x03\x46oo\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x15\n\x03\x62\x61r\x18\x02 \x01(\x0b\x32\x08.Foo.Bar\x1a\x13\n\x03\x42\x61r\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x13\n\x03\x42\x61r\x12\x0c\n\x04name\x18\x01 \x01(\tB\x0c\xa2Q\t\x08\x01\x10\x01\x1a\x03\x66oob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n\x1b\x65xamples/proto/v1/foo.proto\x1a google/protobuf/descriptor.proto\x1a\x10py_package.proto"?\n\x03\x46oo\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x15\n\x03\x62\x61r\x18\x02 \x01(\x0b\x32\x08.Foo.Bar\x1a\x13\n\x03\x42\x61r\x12\x0c\n\x04name\x18\x01 \x01(\t"\x13\n\x03\x42\x61r\x12\x0c\n\x04name\x18\x01 \x01(\tB\x0c\xa2Q\t\x08\x01\x10\x01\x1a\x03\x66oob\x06proto3'
+)
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'examples.proto.v1.foo_pb2', _globals)
+_builder.BuildTopDescriptorsAndMessages(
+    DESCRIPTOR, "examples.proto.v1.foo_pb2", _globals
+)
 if not _descriptor._USE_C_DESCRIPTORS:
-  _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'\242Q\t\010\001\020\001\032\003foo'
-  _globals['_FOO']._serialized_start=83
-  _globals['_FOO']._serialized_end=146
-  _globals['_FOO_BAR']._serialized_start=127
-  _globals['_FOO_BAR']._serialized_end=146
-  _globals['_BAR']._serialized_start=127
-  _globals['_BAR']._serialized_end=146
+    _globals["DESCRIPTOR"]._loaded_options = None
+    _globals["DESCRIPTOR"]._serialized_options = b"\242Q\t\010\001\020\001\032\003foo"
+    _globals["_FOO"]._serialized_start = 83
+    _globals["_FOO"]._serialized_end = 146
+    _globals["_FOO_BAR"]._serialized_start = 127
+    _globals["_FOO_BAR"]._serialized_end = 146
+    _globals["_BAR"]._serialized_start = 127
+    _globals["_BAR"]._serialized_end = 146
 # @@protoc_insertion_point(module_scope)

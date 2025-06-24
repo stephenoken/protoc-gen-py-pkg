@@ -5,13 +5,15 @@ import sys
 
 # Get the current package
 package = sys.modules[__name__]
-package_prefix = package.__name__ + '.'
+package_prefix = package.__name__ + "."
 __all__ = []
+
 
 # Define which classes to include (e.g., only classes with uppercase names)
 def should_include(name, obj):
     print(f"Importing {name}")
-    return inspect.isclass(obj) and name[0].isupper() and not name.startswith('_')
+    return inspect.isclass(obj) and name[0].isupper() and not name.startswith("_")
+
 
 # Walk through all submodules
 for _, name, is_pkg in pkgutil.walk_packages(package.__path__, package_prefix):
