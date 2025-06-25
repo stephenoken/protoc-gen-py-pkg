@@ -1,24 +1,25 @@
 pub mod protos;
-use std::{collections::HashMap, iter::Scan, ops::Range, path::Path};
+use std::{collections::HashMap, path::Path};
 
-use protobuf::{descriptor::FileDescriptorProto, plugin::code_generator_response::File};
+use protobuf::{
+    descriptor::FileDescriptorProto,
+    plugin::{CodeGeneratorRequest, CodeGeneratorResponse, code_generator_response::File},
+};
 use protos::py_package;
 
-pub struct InitPyConfig {
+const CODE_GENERATOR_RESPONSE_FEATURE_PROTO3_OPTIONAL: u64 = 1;
+struct InitPyConfig {
     py_imports: Vec<String>,
 }
 
-pub fn load_python_import_file() -> Vec<String> {
+fn load_python_import_file() -> Vec<String> {
     // This function will load the pu_package_imports.txt file and
     // bundle it's contents as part of the binary.
     let content = include_str!("py_package_imports.txt");
-    content
-        .lines()
-        .map(String::from)
-        .collect::<Vec<String>>()
+    content.lines().map(String::from).collect::<Vec<String>>()
 }
 
-pub fn generate_py_init_configs(
+fn generate_py_init_configs(
     file_descriptor: &FileDescriptorProto,
     opts: &Option<py_package::PyPackageOptions>,
     file_contents: Vec<String>,
@@ -49,13 +50,7 @@ pub fn generate_py_init_configs(
 fn build_init_file_paths<'a>(
     opts: &'a py_package::PyPackageOptions,
     file_descriptor: &FileDescriptorProto,
-) -> impl Iterator<Item = (&'a py_package::PyPackageOptions, String)>
-
-// Scan<
-//     Range<usize>,
-//     String,
-//     impl FnMut(&mut String, usize) -> Option<(&'a py_package::PyPackageOptions, String)>,> 
-{
+) -> impl Iterator<Item = (&'a py_package::PyPackageOptions, String)> {
     let components: Vec<_> = file_descriptor.name().split('/').collect();
     // Use scan to accumulate path components while yielding each one.
     (0..components.len() - 1).scan(String::new(), move |path_so_far, index| {
@@ -73,17 +68,78 @@ fn build_init_file_paths<'a>(
     })
 }
 
-pub fn generate_py_init_files(
+fn generate_py_init_files(
     configs: HashMap<String, InitPyConfig>,
 ) -> impl Iterator<Item = File> {
     // Iterate over the configurations and create `File` objects for each.
     configs.into_iter().flat_map(|(path, config)| {
         let mut file = File::new();
-        file.set_name(format!("{}/__init__.py", path));
+        let file_name = format!("{}/__init__.py", path);
+        let content = config.py_imports.join("\n");
+        file.set_name(file_name);
         // Set the content of the file to the imports.
-        file.set_content(config.py_imports.join("\n"));
+        file.set_content(content);
         Some(file)
     })
+}
+
+fn extract_proto_options(
+    request: &CodeGeneratorRequest,
+) -> Vec<(&FileDescriptorProto, Option<py_package::PyPackageOptions>)> {
+    request
+        .proto_file
+        .iter()
+        .map(|file| {
+            let opts = py_package::exts::py_package_opts.get(&file.options);
+            if let Some(opt) = &opts {
+                log::info!("Found py_package options in file: {}", file.name());
+                log::info!("Options: {:?}", opt);
+            };
+            (file, opts)
+        })
+        .collect()
+}
+
+fn generate_files(
+    opts: Vec<(&FileDescriptorProto, Option<py_package::PyPackageOptions>)>,
+) -> Vec<File> {
+    let mut output_files: HashMap<String, File> = HashMap::new();
+
+    opts.iter()
+        .flat_map(|(file_descriptor, opts)| {
+            // protoc_gen_py_pkg::generate_py_init_files(file_descriptor, opts)
+            let configs =
+                generate_py_init_configs(file_descriptor, opts, load_python_import_file());
+            generate_py_init_files(configs)
+        })
+        .for_each(|file| {
+            if let Some(file_name) = file.name.as_ref() {
+                log::info!("Generated file: {}", file_name);
+                output_files.insert(file_name.clone(), file);
+            } else {
+                log::warn!("Generated file with no name, skipping.");
+            }
+        });
+
+    output_files.into_values().collect()
+}
+
+pub fn process_request(request: CodeGeneratorRequest) -> CodeGeneratorResponse {
+    let mut response = CodeGeneratorResponse::new();
+    response.set_supported_features(CODE_GENERATOR_RESPONSE_FEATURE_PROTO3_OPTIONAL);
+
+    // Extract options from proto files
+    let proto_options = extract_proto_options(&request);
+
+    // Generate files based on options
+    let files = generate_files(proto_options);
+
+    // Add files to response
+    for file in files {
+        response.file.push(file);
+    }
+
+    response
 }
 
 #[cfg(test)]
