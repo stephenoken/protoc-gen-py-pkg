@@ -9,19 +9,49 @@ const CODE_GENERATOR_RESPONSE_FEATURE_PROTO3_OPTIONAL: u64 = 1;
 fn main() {
     env_logger::init();
     log::info!("Starting the application...");
+    
+    // Parse request into a struct
+    let request = parse_request();
+    
+    // Process the request and generate files
+    let response = process_request(request);
+    
+    // Write response
+    write_response(response);
+}
+
+fn parse_request() -> CodeGeneratorRequest {
     let mut request = CodeGeneratorRequest::new();
+    request.merge_from_bytes(
+        BufReader::new(std::io::stdin())
+            .bytes()
+            .filter_map(Result::ok)
+            .collect::<Vec<u8>>()
+            .as_slice(),
+    ).unwrap();
     request
-        .merge_from_bytes(
-            BufReader::new(std::io::stdin())
-                .bytes()
-                .filter_map(Result::ok)
-                .collect::<Vec<u8>>()
-                .as_slice(),
-        )
-        .unwrap();
+}
+
+fn process_request(request: CodeGeneratorRequest) -> CodeGeneratorResponse {
     let mut response = CodeGeneratorResponse::new();
     response.set_supported_features(CODE_GENERATOR_RESPONSE_FEATURE_PROTO3_OPTIONAL);
-    let opts: Vec<(&FileDescriptorProto, Option<py_package::PyPackageOptions>)> = request
+    
+    // Extract options from proto files
+    let proto_options = extract_proto_options(&request);
+    
+    // Generate files based on options
+    let files = generate_files(proto_options);
+    
+    // Add files to response
+    for file in files {
+        response.file.push(file);
+    }
+    
+    response
+}
+
+fn extract_proto_options(request: &CodeGeneratorRequest) -> Vec<(&FileDescriptorProto, Option<py_package::PyPackageOptions>)> {
+    request
         .proto_file
         .iter()
         .map(|file| {
@@ -32,8 +62,10 @@ fn main() {
             };
             (file, opts)
         })
-        .collect();
-    
+        .collect()
+}
+
+fn generate_files(opts: Vec<(&FileDescriptorProto, Option<py_package::PyPackageOptions>)>) -> Vec<File> {
     let mut output_files: HashMap<String, File> = HashMap::new();
 
     opts.iter()
@@ -55,11 +87,10 @@ fn main() {
             }
         });
 
-        output_files.iter()
-        .for_each(|(_, file)| {
-            response.file.push(file.clone());
-        });
+    output_files.into_values().collect()
+}
 
+fn write_response(response: CodeGeneratorResponse) {
     let output = response.write_to_bytes().unwrap();
     std::io::stdout().write_all(&output).unwrap()
 }

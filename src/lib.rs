@@ -49,11 +49,13 @@ pub fn generate_py_init_configs(
 fn build_init_file_paths<'a>(
     opts: &'a py_package::PyPackageOptions,
     file_descriptor: &FileDescriptorProto,
-) -> Scan<
-    Range<usize>,
-    String,
-    impl FnMut(&mut String, usize) -> Option<(&'a py_package::PyPackageOptions, String)>,
-> {
+) -> impl Iterator<Item = (&'a py_package::PyPackageOptions, String)>
+
+// Scan<
+//     Range<usize>,
+//     String,
+//     impl FnMut(&mut String, usize) -> Option<(&'a py_package::PyPackageOptions, String)>,> 
+{
     let components: Vec<_> = file_descriptor.name().split('/').collect();
     // Use scan to accumulate path components while yielding each one.
     (0..components.len() - 1).scan(String::new(), move |path_so_far, index| {
