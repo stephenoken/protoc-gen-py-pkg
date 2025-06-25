@@ -1,10 +1,8 @@
 use protobuf::{
-    Message,
-    descriptor::FileDescriptorProto,
-    plugin::{CodeGeneratorRequest, CodeGeneratorResponse},
+    descriptor::FileDescriptorProto, plugin::{code_generator_response::File, CodeGeneratorRequest, CodeGeneratorResponse}, Message
 };
 use protoc_gen_py_pkg::protos::py_package;
-use std::io::{BufReader, Read, Write};
+use std::{collections::HashMap, io::{BufReader, Read, Write}};
 
 const CODE_GENERATOR_RESPONSE_FEATURE_PROTO3_OPTIONAL: u64 = 1;
 
@@ -35,7 +33,8 @@ fn main() {
             (file, opts)
         })
         .collect();
-
+    let mut output_files: HashMap<String, File> = HashMap::new();
+    
     opts.iter()
         .flat_map(|(file_descriptor, opts)| {
             // protoc_gen_py_pkg::generate_py_init_files(file_descriptor, opts)
@@ -47,7 +46,17 @@ fn main() {
             protoc_gen_py_pkg::generate_py_init_files(configs)
         })
         .for_each(|file| {
-            response.file.push(file);
+            if let Some(file_name) = file.name.as_ref(){
+                log::info!("Generated file: {}", file_name);
+                output_files.insert(file_name.clone(), file);
+            } else {
+                log::warn!("Generated file with no name, skipping.");
+            }
+        });
+
+        output_files.iter()
+        .for_each(|(_, file)| {
+            response.file.push(file.clone());
         });
 
     let output = response.write_to_bytes().unwrap();
