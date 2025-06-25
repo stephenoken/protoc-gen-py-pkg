@@ -33,8 +33,9 @@ fn main() {
             (file, opts)
         })
         .collect();
-    let mut output_files: HashMap<String, File> = HashMap::new();
     
+    let mut output_files: HashMap<String, File> = HashMap::new();
+
     opts.iter()
         .flat_map(|(file_descriptor, opts)| {
             // protoc_gen_py_pkg::generate_py_init_files(file_descriptor, opts)
