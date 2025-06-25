@@ -1,4 +1,4 @@
-module github.com/stephenoken/protoc-gen-py-pkg
+module github.com/stephenoken/protoc-gen-py-pkg/proto
 
 go 1.23.4
 
