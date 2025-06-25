@@ -12,14 +12,19 @@ struct InitPyConfig {
     py_imports: Vec<String>,
 }
 
+struct PyPackageConfig<'a> {
+    opts: Option<py_package::PyPackageOptions>,
+    file_descriptor: &'a FileDescriptorProto,
+}
+
 fn load_python_import_file() -> Vec<String> {
     // This function will load the pu_package_imports.txt file and
     // bundle it's contents as part of the binary.
-    let content = include_str!("py_package_imports.txt");
+    let content = include_str!("py_package_imports.py");
     content.lines().map(String::from).collect::<Vec<String>>()
 }
 
-fn generate_py_init_configs(
+fn create_py_init_configs(
     file_descriptor: &FileDescriptorProto,
     opts: Option<py_package::PyPackageOptions>,
     file_contents: Vec<String>,
@@ -31,7 +36,13 @@ fn generate_py_init_configs(
         .flat_map(|opt| build_init_file_paths(opt, file_descriptor))
         .for_each(|(opts, file_path)| {
             let path = Path::new(&file_path);
-            let parent_dir = path.parent().unwrap_or_else(|| Path::new(""));
+            let parent_dir = match path.parent() {
+                Some(dir) => dir,
+                None => {
+                    log::warn!("File path {} has no parent directory.", file_path);
+                    return;
+                }
+            };
             let parent_dir_str = parent_dir.to_string_lossy().to_string();
             let init_py_config = configs
                 .entry(parent_dir_str)
@@ -83,30 +94,31 @@ fn generate_py_init_files(configs: HashMap<String, InitPyConfig>) -> impl Iterat
 
 fn extract_proto_options(
     request: &CodeGeneratorRequest,
-) -> impl Iterator<Item = (&FileDescriptorProto, Option<py_package::PyPackageOptions>)> {
+) -> impl Iterator<Item = PyPackageConfig> {
     request.proto_file.iter().map(|file| {
         let opts = py_package::exts::py_package_opts.get(&file.options);
         if let Some(opt) = &opts {
             log::info!("Found py_package options in file: {}", file.name());
             log::info!("Options: {:?}", opt);
         };
-        (file, opts)
+        PyPackageConfig {
+            opts,
+            file_descriptor: file,
+        }
     })
 }
 
 fn generate_files<'a>(
     opts: impl Iterator<
-        Item = (
-            &'a FileDescriptorProto,
-            Option<py_package::PyPackageOptions>,
-        ),
+        Item = PyPackageConfig<'a>
     >,
 ) -> Vec<File> {
     let mut output_files: HashMap<String, File> = HashMap::new();
-
-    opts.flat_map(|(file_descriptor, opts)| {
+    opts.flat_map(|config| {
         // protoc_gen_py_pkg::generate_py_init_files(file_descriptor, opts)
-        let configs = generate_py_init_configs(file_descriptor, opts, load_python_import_file());
+        let file_descriptor = config.file_descriptor;
+        let opts = config.opts;
+        let configs = create_py_init_configs(file_descriptor, opts, load_python_import_file());
         generate_py_init_files(configs)
     })
     .for_each(|file| {
@@ -157,7 +169,7 @@ mod tests {
         foo.set_name(String::from("Foo"));
         file_descriptor.message_type.push(foo);
         let binding = Some(opts);
-        let result = generate_py_init_configs(
+        let result = create_py_init_configs(
             &file_descriptor,
             binding,
             vec![
@@ -191,7 +203,7 @@ mod tests {
     #[test]
     fn it_should_generate_py_init_configs_with_no_opts() {
         let opts: Option<py_package::PyPackageOptions> = None;
-        let result = generate_py_init_configs(&FileDescriptorProto::new(), opts, vec![]);
+        let result = create_py_init_configs(&FileDescriptorProto::new(), opts, vec![]);
         assert!(result.is_empty());
     }
 
@@ -206,7 +218,7 @@ mod tests {
         foo.set_name(String::from("Foo"));
         file_descriptor.message_type.push(foo);
         let binding = Some(opts);
-        let result = generate_py_init_configs(
+        let result = create_py_init_configs(
             &file_descriptor,
             binding,
             vec![
