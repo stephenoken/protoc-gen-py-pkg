@@ -176,7 +176,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     R\x06enable\x127\n\x18enable_top_level_imports\x18\x02\x20\x01(\x08R\x15\
     enableTopLevelImports:c\n\x0fpy_package_opts\x18\x94\n\x20\x01(\x0b2\x1c\
     .py_package.PyPackageOptions\x12\x1c.google.protobuf.FileOptionsR\rpyPac\
-    kageOptsB0Z.github.com/stephenoken/protoc-gen-py-pkg/protob\x06proto3\
+    kageOptsb\x06proto3\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file
