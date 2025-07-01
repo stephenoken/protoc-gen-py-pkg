@@ -92,9 +92,7 @@ fn generate_py_init_files(configs: HashMap<String, InitPyConfig>) -> impl Iterat
     })
 }
 
-fn extract_proto_options(
-    request: &CodeGeneratorRequest,
-) -> impl Iterator<Item = PyPackageConfig> {
+fn extract_proto_options(request: &CodeGeneratorRequest) -> impl Iterator<Item = PyPackageConfig> {
     request.proto_file.iter().map(|file| {
         let opts = py_package::exts::py_package_opts.get(&file.options);
         if let Some(opt) = &opts {
@@ -108,11 +106,7 @@ fn extract_proto_options(
     })
 }
 
-fn generate_files<'a>(
-    opts: impl Iterator<
-        Item = PyPackageConfig<'a>
-    >,
-) -> Vec<File> {
+fn generate_files<'a>(opts: impl Iterator<Item = PyPackageConfig<'a>>) -> Vec<File> {
     let mut output_files: HashMap<String, File> = HashMap::new();
     opts.flat_map(|config| {
         // protoc_gen_py_pkg::generate_py_init_files(file_descriptor, opts)
