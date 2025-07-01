@@ -4,7 +4,6 @@ import "py_package.proto";
 
 option (py_package.py_package_opts).enable = true;
 option (py_package.py_package_opts).enable_top_level_imports = true;
-option (py_package.py_package_opts).parent_package = "foo";
 
 message Foo {
   string name = 1;
