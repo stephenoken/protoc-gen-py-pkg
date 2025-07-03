@@ -20,7 +20,8 @@ struct PyPackageConfig<'a> {
 fn load_python_import_file() -> Vec<String> {
     // This function will load the pu_package_imports.txt file and
     // bundle it's contents as part of the binary.
-    let content = include_str!("py_package_imports.py");
+    let mut content = include_str!("py_package_imports.py").to_string();
+    content += "\n";
     content.lines().map(String::from).collect::<Vec<String>>()
 }
 
