@@ -105,7 +105,7 @@ const file_py_package_proto_rawDesc = "" +
 	"\x06enable\x18\x01 \x01(\bR\x06enable\x127\n" +
 	"\x18enable_top_level_imports\x18\x02 \x01(\bR\x15enableTopLevelImports:c\n" +
 	"\x0fpy_package_opts\x12\x1c.google.protobuf.FileOptions\x18\x94\n" +
-	" \x01(\v2\x1c.py_package.PyPackageOptionsR\rpyPackageOptsB4Z2github.com/stephenoken/protoc-gen-py-pkg/v1/protosb\x06proto3"
+	" \x01(\v2\x1c.py_package.PyPackageOptionsR\rpyPackageOptsB1Z/github.com/stephenoken/protoc-gen-py-pkg/protosb\x06proto3"
 
 var (
 	file_py_package_proto_rawDescOnce sync.Once
