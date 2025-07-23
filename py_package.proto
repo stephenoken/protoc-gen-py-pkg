@@ -2,6 +2,7 @@ syntax = "proto3";
 package py_package;
 import "google/protobuf/descriptor.proto";
 
+option go_package = "github.com/stephenoken/protoc-gen-py-pkg/v1/protos";
 extend google.protobuf.FileOptions {
     // Python package options.
     PyPackageOptions py_package_opts = 1300;
