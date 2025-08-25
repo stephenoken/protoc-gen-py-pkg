@@ -23,14 +23,14 @@ def get_version_suffix(modname):
     return ''
 
 # Walk through all submodules
-for _, modname, is_pkg in pkgutil.walk_packages(package.__path__, package_prefix):
+for _, name, is_pkg in pkgutil.walk_packages(package.__path__, package_prefix):
     try:
-        module = importlib.import_module(modname)
-        suffix = get_version_suffix(modname)
+        module = importlib.import_module(name)
+        suffix = get_version_suffix(name)
         for attr_name, attr_value in inspect.getmembers(module):
             if should_include(attr_name, attr_value):
                 new_name = f"{attr_name}{suffix}" if suffix else attr_name
                 globals()[new_name] = attr_value
                 __all__.append(new_name)
-    except ImportError:
+    except ImportError as error:
         logger.warning(f"Failed to import module {name}: {error}")
