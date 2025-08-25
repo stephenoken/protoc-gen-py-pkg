@@ -2,6 +2,10 @@ import importlib
 import pkgutil
 import inspect
 import sys
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Get the current package
 package = sys.modules[__name__]
@@ -23,5 +27,6 @@ for _, name, is_pkg in pkgutil.walk_packages(package.__path__, package_prefix):
             if should_include(attr_name, attr_value):
                 globals()[attr_name] = attr_value
                 __all__.append(attr_name)
-    except ImportError:
-        pass
+    except ImportError as error:
+        logger.warning(f"Failed to import module {name}: {error}")
+        

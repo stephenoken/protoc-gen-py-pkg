@@ -21,6 +21,11 @@ to be `true` as file level option. If set, and with the following protoc flag
 `--py-pkg_out=examples/src/foo` the import statement would be `from examples import Foo`. This assumes that
 examples is the root module of your python object.
 
+If you support multiple versions of your generated code (I.E v1, v1, etc) you can also set
+`enable_versioned_imports` to be `true` at the plugin level. If set true the top level imports
+will append the version number to the top level import. For example
+`from examples.v1.foo_pb2 import Foo` can be imported as `from examples import Foo_v1`.
+
 Note: that you will also need to include `py_package.proto` as part of your protobuf build.
 
 ### Example

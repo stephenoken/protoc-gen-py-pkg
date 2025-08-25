@@ -13,4 +13,6 @@ message PyPackageOptions {
     bool enable = 1; 
     // If true, imports will be generated at the top level of the package.
     bool enable_top_level_imports = 2;
+    // If true, the generated imports will be versioned. I.E from YOUR_PACKAGE import YOUR_MODULE_v1
+    bool enable_versioned_imports = 3;
 }
