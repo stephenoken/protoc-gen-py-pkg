@@ -22,7 +22,7 @@ to be `true` as file level option. If set, and with the following protoc flag
 examples is the root module of your python object.
 
 If you support multiple versions of your generated code (I.E v1, v1, etc) you can also set
-`enable_versioned_imports` to be `true` at the plugin level. If set true the top level imports
+`enable_versioned_imports` to be `true` as file level option. If set true the top level imports
 will append the version number to the top level import. For example
 `from examples.v1.foo_pb2 import Foo` can be imported as `from examples import Foo_v1`.
 
